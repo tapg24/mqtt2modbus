@@ -24,26 +24,12 @@ from pymodbus.payload import BinaryPayloadBuilder, Endian
 
 broker = '31.31.202.123'
 port = 1883
-topic = "#"
+# topic = "#"
+topic = "DarMal/#"
 # generate client ID with pub prefix randomly
 client_id = f'python-mqtt-{random.randint(0, 100)}'
 username = "agrosensor"
 password = "asmqttpas2"
-
-
-def connect_mqtt(modbus_context) -> mqtt_client:
-    def on_connect(client, userdata, flags, rc):
-        if rc == 0:
-            print("Connected to MQTT Broker!")
-        else:
-            print("Failed to connect, return code %d\n", rc)
-
-    client_userdata = {'modbus_context': modbus_context}
-    client = mqtt_client.Client(client_id, userdata=client_userdata)
-    client.username_pw_set(username, password)
-    client.on_connect = on_connect
-    client.connect(broker, port)
-    return client
 
 
 assoc_map = {}
@@ -65,13 +51,34 @@ def subscribe(client: mqtt_client):
             except Exception as ex:
                 print('error')
 
-    client.subscribe(topic)
     client.on_message = on_message
+    return client.subscribe(topic)
+
+
+def connect_mqtt(modbus_context) -> mqtt_client:
+    def on_connect(client, userdata, flags, rc):
+        if rc == 0:
+            print("Connected to MQTT Broker!")
+            subscribe(client)
+            (rc, mid) = subscribe(client)
+            if rc == mqtt_client.MQTT_ERR_SUCCESS:
+                print("Subscribed to topic", topic)
+            else:
+                print("Failed to subscribe to topic", topic)
+        else:
+            print("Failed to connect, return code %d\n", rc)
+
+    client_userdata = {'modbus_context': modbus_context}
+    client = mqtt_client.Client(client_id, userdata=client_userdata)
+    client.username_pw_set(username, password)
+    client.on_connect = on_connect
+    client.connect(broker, port)
+    return client
 
 
 def run_mqtt_client(modbus_context) -> mqtt_client:
     client = connect_mqtt(modbus_context)
-    subscribe(client)
+    # subscribe(client)
     client.loop_start()  # start thread for subscribe on_message
     return client
 
@@ -89,8 +96,7 @@ if __name__ == '__main__':
         # read config
         read_config()
         # prepare modbus store
-        store = ModbusSlaveContext(
-            co=ModbusSequentialDataBlock(0, [0]*100))
+        store = ModbusSlaveContext(co=ModbusSequentialDataBlock(0, [0]*100))
         context = ModbusServerContext(slaves=store, single=True)
 
         # run mqtt client
