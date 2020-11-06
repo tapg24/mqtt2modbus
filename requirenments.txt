@@ -1,0 +1,3 @@
+paho-mqtt==1.5.1
+pymodbus==2.4.0
+twisted==20.3.0
