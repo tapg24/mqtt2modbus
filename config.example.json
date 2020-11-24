@@ -1,0 +1,12 @@
+{
+    "mqtt_broker": [
+        {
+            "address": "5.6.5.1",
+            "port": 1883,
+            "topic": "Sklad/#",
+            "client_id": "mqtt2modbus-gateway",
+            "username": "username",
+            "password": "password"
+        }
+    ]
+}

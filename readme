@@ -1,0 +1,9 @@
+cp config.example.json config.json
+cp map.example.json map.json
+cp mqtt2modbus.example.service /etc/systemd/system/mqtt2modbus.service
+
+systemctl enable mqtt2modbus
+systemctl start mqtt2modbus
+
+# reload configuration without restart service
+systemctl reload mqtt2modbus

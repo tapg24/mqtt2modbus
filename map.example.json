@@ -1,0 +1,88 @@
+{
+    "devices": {
+        "Sklad/Dev_0_": {
+            "params": {
+                "CO2_0": {
+                    "modbus_offset": 12,
+                    "size": 2,
+                    "type": "float"
+                },
+                "Tco2_0": {
+                    "modbus_offset": 14,
+                    "size": 2,
+                    "type": "float"
+                },
+                "CO2_1": {
+                    "modbus_offset": 4,
+                    "size": 2,
+                    "type": "float"
+                },
+                "Tco2_1": {
+                    "modbus_offset": 6,
+                    "size": 2,
+                    "type": "float"
+                },
+                "CO2_2": {
+                    "modbus_offset": 8,
+                    "size": 2,
+                    "type": "float"
+                },
+                "Tco2_2": {
+                    "modbus_offset": 10,
+                    "size": 2,
+                    "type": "float"
+                },
+                "CO2_3": {
+                    "modbus_offset": 0,
+                    "size": 2,
+                    "type": "float"
+                },
+                "Tco2_3": {
+                    "modbus_offset": 2,
+                    "size": 2,
+                    "type": "float"
+                },
+                "CO2_4": {
+                    "modbus_offset": 16,
+                    "size": 2,
+                    "type": "float"
+                },
+                "Tco2_4": {
+                    "modbus_offset": 18,
+                    "size": 2,
+                    "type": "float"
+                },
+                "Tdht22_0": {
+                    "modbus_offset": 20,
+                    "size": 2,
+                    "type": "float"
+                },
+                "Hdht22_0": {
+                    "modbus_offset": 22,
+                    "size": 2,
+                    "type": "float"
+                },
+                "Tdht22_1": {
+                    "modbus_offset": 24,
+                    "size": 2,
+                    "type": "float"
+                },
+                "Hdht22_1": {
+                    "modbus_offset": 26,
+                    "size": 2,
+                    "type": "float"
+                },
+                "Tds18_0": {
+                    "modbus_offset": 28,
+                    "size": 2,
+                    "type": "float"
+                },
+                "Tds18_1": {
+                    "modbus_offset": 30,
+                    "size": 2,
+                    "type": "float"
+                }
+            }
+        }
+    }
+}
