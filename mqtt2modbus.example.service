@@ -4,3 +4,6 @@ Description=MQTT to ModbusTCP Gateway
 [Service]
 ExecStart=/usr/bin/python3 /opt/gateway/mqtt2modbus/simple_serv.py
 ExecReload=/bin/kill -s HUP $MAINPID
+
+[Install]
+WantedBy=multi-user.target
