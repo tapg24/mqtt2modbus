@@ -153,7 +153,7 @@ class MQTTChannel(object):
         log.info('start check alive all devices...')
         for device_name, device_prop in self.map['devices'].items():
             device_alive = True
-            for param_prop in device_prop.values():
+            for param_name, param_prop in device_prop['params'].items():
                 updated_at = param_prop.get('updated_at')
                 if updated_at:
                     minutes_diff = (datetime.datetime.now() - updated_at).total_seconds() / 60.0
@@ -176,7 +176,7 @@ class MQTTChannel(object):
         param = self.map['address2param'].get(comp_address)
         if param is not None:
             alive = param.get('alive', None)
-            if alive is None:
+            if alive == False or alive is None:
                 return False
         return True
 
