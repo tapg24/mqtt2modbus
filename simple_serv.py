@@ -153,11 +153,13 @@ class MQTTChannel(object):
         log.info('start check alive all devices...')
         for device_name, device_prop in self.map['devices'].items():
             device_alive = True
+            device_alarm_timeout = device_prop.get('alarm_timeout')
             for param_name, param_prop in device_prop['params'].items():
                 updated_at = param_prop.get('updated_at')
+                param_alarm_timeout = device_alarm_timeout if device_alarm_timeout else param_prop.get('alarm_timeout', 1)
                 if updated_at:
                     minutes_diff = (datetime.datetime.now() - updated_at).total_seconds() / 60.0
-                    if minutes_diff > 2:
+                    if minutes_diff > param_alarm_timeout:
                         param_prop['alive'] = False
                         device_alive = False
                 else:
