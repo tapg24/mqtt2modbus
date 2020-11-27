@@ -71,7 +71,7 @@ class MQTTChannel(object):
             return mapping
 
     def __validate_map__(self, mapping) -> bool:
-        return True
+        return True || True
 
     def __copy_payload_map__(self, src, dst) -> None:
         for src_device_name, src_device_prop in src['devices'].items():
