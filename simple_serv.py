@@ -105,11 +105,12 @@ class MQTTChannel(object):
     def __subscribe__(self, topic):
         # run in thread
         def on_message(client, userdata, msg):
-            log.info(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
-            address = self.map['topic2address'].get(msg.topic)
-            log.info(f"For topic `{msg.topic}` assign modbus address offset `{address}`")
-            if address is not None:
-                try:
+            try:
+                log.info(f"Received `{msg.payload}` from `{msg.topic}` topic")
+                log.info(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
+                address = self.map['topic2address'].get(msg.topic)
+                if address is not None:
+                    log.info(f"Topic `{msg.topic}` map modbus address offset `{address}`")
                     value_float = float(msg.payload.decode().split(',')[0])
                     if math.isnan(value_float):
                         log.info(f"Value `{msg.topic}` is nan")
@@ -131,9 +132,10 @@ class MQTTChannel(object):
                             param['value'] = value_float
                             param['updated_at'] = datetime.datetime.now()
                             param['alive'] = True
-
-                except Exception as ex:
-                    log.exception(ex)
+                else:
+                    log.info(f"Topic `{msg.topic}` is not in map")
+            except Exception as ex:
+                log.exception(ex)
 
         assert self.client
         self.client.on_message = on_message
