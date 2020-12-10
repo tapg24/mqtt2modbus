@@ -10,6 +10,7 @@ import traceback
 import json
 import datetime
 import struct
+import math
 
 from paho.mqtt import client as mqtt_client
 
@@ -33,8 +34,8 @@ FORMAT = ('%(asctime)-15s %(threadName)-15s'
           ' %(levelname)-8s %(module)-15s:%(lineno)-8s %(message)s')
 logging.basicConfig(format=FORMAT)
 log = logging.getLogger()
-# log.setLevel(logging.DEBUG)
 log.setLevel(logging.INFO)
+logging.getLogger("pymodbus").setLevel(logging.CRITICAL)
 
 
 map_filename = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'map.json')
@@ -71,7 +72,7 @@ class MQTTChannel(object):
             return mapping
 
     def __validate_map__(self, mapping) -> bool:
-        return True || True
+        return True
 
     def __copy_payload_map__(self, src, dst) -> None:
         for src_device_name, src_device_prop in src['devices'].items():
@@ -106,9 +107,17 @@ class MQTTChannel(object):
         def on_message(client, userdata, msg):
             log.info(f"Received `{msg.payload.decode()}` from `{msg.topic}` topic")
             address = self.map['topic2address'].get(msg.topic)
+            log.info(f"For topic `{msg.topic}` assign modbus address offset `{address}`")
             if address is not None:
                 try:
                     value_float = float(msg.payload.decode().split(',')[0])
+                    if math.isnan(value_float):
+                        log.info(f"Value `{msg.topic}` is nan")
+                        return
+                    if math.isinf(value_float):
+                        log.info(f"Value `{msg.topic}` is inf")
+                        return
+                    log.info(f"Assign value `{value_float}` to modbus offset `{address}`")
                     builder = BinaryPayloadBuilder(byteorder=Endian.Big, wordorder=Endian.Big)
                     builder.add_32bit_float(value_float)
                     payload = builder.to_registers()
@@ -147,7 +156,8 @@ class MQTTChannel(object):
         self.client = mqtt_client.Client(broker_config['client_id'], userdata=client_userdata)
         self.client.username_pw_set(broker_config['username'], broker_config['password'])
         self.client.on_connect = on_connect
-        self.client.connect(broker_config['address'], broker_config['port'])
+        # self.client.connect(broker_config['address'], broker_config['port'], 30)
+        self.client.connect_async(broker_config['address'], broker_config['port'], 30)
 
     def check_alive(self):
         log.info('start check alive all devices...')
